@@ -67,7 +67,7 @@ Implemente los métodos de la clase `E02AVLTree`:
 - `int height()` retorna la altura del árbol.
 - `int size()` retorna la cantidad de nodos dentro del árbol.
 
-### Ejemplo 3.1
+### Ejemplo 2.1
 
 ```java
 E02AVLTree<Integer> avlTree = new E02AVLTree<>(Integer::compare); // Crea un árbol AVL de números enteros.
