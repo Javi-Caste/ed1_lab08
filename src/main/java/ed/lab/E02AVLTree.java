@@ -5,12 +5,67 @@ import java.util.Comparator;
 public class E02AVLTree<T> {
 
     private final Comparator<T> comparator;
+    private Node<T> root;
+    private int size;
 
     public E02AVLTree(Comparator<T> comparator) {
         this.comparator = comparator;
+        this.root = null;
+        this.size = 0;
     }
 
     public void insert(T value) {
+        this.root = insert(this.root, value);
+    }
+    private Node<T> insert(Node<T> root, T value){
+        if(root == null){
+            this.size ++;
+            return new Node<T>(value);
+        }
+        int compare = comparator.compare(value, root.value);
+        if (compare < 0) root.left = insert(root, value);
+        else if (compare > 0) root.right = insert (root, value);
+        else{
+            return root;
+        }
+        root.height = 1 + Math.max(getHeight(root.left), getHeight(root.right));
+        int balance = getBalance(root);
+
+        if(balance < -1 && comparator.compare(value, root.left.value) > 0){
+            root.left = rotateLeft(root.left);
+            return rotateRight(root);
+        }
+        if(balance > 1 && comparator.compare(value, root.left.value) < 0) {
+            root.right = rotateRight(root);
+            return rotateLeft(root);
+        }
+        return root;
+    }
+
+    private Node<T> rotateLeft(Node<T> root){
+        if(root ==null) return null;
+
+        Node<T> newRoot = root.right;
+        root.right = newRoot.left;
+
+        return null;
+
+
+    }
+    private Node<T> rotateRight (Node<T> root){
+        if(root ==null) return null;
+
+        Node<T> newRoot = root,left;
+        root.left = newRoot.right;
+        newRoot.right = root;
+
+        updateHeights(newRoot);
+        updateHeights(root);
+        return newRoot;
+
+    }
+
+    private void updateHeights (Node<T> root){
 
     }
 
@@ -28,5 +83,26 @@ public class E02AVLTree<T> {
 
     public int size() {
         return 0;
+    }
+
+    private int getBalance(Node<T> root){
+        if (root == null) return 0;
+        return getHeight(root.right) - getHeight(root.left);
+    }
+    private int getHeight(Node<T> root){
+//        if (root == null) return 0;
+        return 0;
+    }
+
+    protected static class Node<T>{
+        protected T value;
+        protected Node<T> left;
+        protected Node<T> right;
+        protected int height;
+
+        public Node (T value){
+            this.value = value;
+            this.height = 1;
+        }
     }
 }
