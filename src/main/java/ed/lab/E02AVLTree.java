@@ -31,10 +31,12 @@ public class E02AVLTree<T> {
         root.height = 1 + Math.max(getHeight(root.left), getHeight(root.right));
         int balance = getBalance(root);
 
+        //left heavy
         if(balance < -1 && comparator.compare(value, root.left.value) > 0){
             root.left = rotateLeft(root.left);
             return rotateRight(root);
         }
+        //right heavy
         if(balance > 1 && comparator.compare(value, root.left.value) < 0) {
             root.right = rotateRight(root);
             return rotateLeft(root);
@@ -47,15 +49,18 @@ public class E02AVLTree<T> {
 
         Node<T> newRoot = root.right;
         root.right = newRoot.left;
+        newRoot.left = root;
 
-        return null;
+        updateHeights(newRoot);
+        updateHeights(root);
+        return newRoot;
 
 
     }
     private Node<T> rotateRight (Node<T> root){
         if(root ==null) return null;
 
-        Node<T> newRoot = root,left;
+        Node<T> newRoot = root.left;
         root.left = newRoot.right;
         newRoot.right = root;
 
@@ -66,7 +71,8 @@ public class E02AVLTree<T> {
     }
 
     private void updateHeights (Node<T> root){
-
+        if (root == null) return;
+        root.height = 1 + Math.max(getHeight(root.left), getHeight(root.right));
     }
 
     public void delete(T value) {
@@ -78,11 +84,12 @@ public class E02AVLTree<T> {
     }
 
     public int height() {
-        return 0;
+        if(this.root == null) return 0;
+        return this.root.height;
     }
 
     public int size() {
-        return 0;
+        return this.size;
     }
 
     private int getBalance(Node<T> root){
@@ -90,15 +97,15 @@ public class E02AVLTree<T> {
         return getHeight(root.right) - getHeight(root.left);
     }
     private int getHeight(Node<T> root){
-//        if (root == null) return 0;
-        return 0;
+       if (root == null) return 0;
+        return root.height;
     }
 
     protected static class Node<T>{
         protected T value;
         protected Node<T> left;
         protected Node<T> right;
-        protected int height;
+        protected int height = 1;
 
         public Node (T value){
             this.value = value;
